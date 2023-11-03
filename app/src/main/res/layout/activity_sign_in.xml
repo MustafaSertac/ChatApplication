@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Developed by Developer Sam 2023 ©"
+            android:text="Developed by Developer Mustafa 2023 ©"
             android:textColor="@color/black"
             android:fontFamily="@font/nunito_bold"
             android:textSize="16sp"
@@ -93,7 +93,9 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
+            android:backgroundTint="@color/purple_700"
+            android:textColor="@color/white"
             android:id="@+id/loginButton"
             android:layout_width="300dp"
             android:layout_height="60dp"

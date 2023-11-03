@@ -1,3 +1,3 @@
 package com.example.chatapplication.model
 
- class Message()
+ class Messages()

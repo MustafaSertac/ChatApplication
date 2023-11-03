@@ -2,16 +2,7 @@
 <layout>
 
 
-    <data>
 
-
-        <variable
-            name="viewModel"
-            type="com.example.chatmessenger.mvvm.ChatAppViewModel" />
-
-
-
-    </data>
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -92,8 +83,9 @@
                 android:id="@+id/settingUpdateName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="24dp"
                 android:ems="10"
-                android:text="@={viewModel.name}"
+            android:text=""
                 android:hint="Name"
                 android:fontFamily="@font/nunito_bold"
                 android:importantForAutofill="no"
