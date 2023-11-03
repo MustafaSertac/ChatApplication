@@ -73,7 +73,8 @@ fireStore=FirebaseFirestore.getInstance()
         signUpAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
             if(it.isSuccessful){
 val user=signUpAuth.currentUser
-                val hashMap= hashMapOf("userId" to user!!.uid!!,"userName" to name,"userEmail" to email,"status" to "default","imageUrl" to "https://www.pngarts.com/files/11/Elon-Musk-PNG-Picture.png")
+
+                val hashMap= hashMapOf("userid" to user!!.uid!!,"username" to name,"useremail" to email,"status" to "default","imageUrl" to "https://www.pngarts.com/files/11/Elon-Musk-PNG-Picture.png")
 fireStore.collection("Users").document(user.uid).set(hashMap)
                 signUpPds.dismiss()
                 startActivity(Intent(this,SignInActivity::class.java))
