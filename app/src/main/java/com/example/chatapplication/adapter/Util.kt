@@ -1,6 +1,9 @@
 package com.example.chatapplication.adapter
 
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.logging.SimpleFormatter
 
 class Util {
     companion object{
@@ -12,5 +15,16 @@ class Util {
         }
             return userId
     }
-}
+        fun getTime(): String {
+
+
+            val formatter = SimpleDateFormat("HH:mm:ss")
+            val date: Date = Date(System.currentTimeMillis())
+            val stringdate = formatter.format(date)
+
+
+            return stringdate
+
+        }
+    }
 }

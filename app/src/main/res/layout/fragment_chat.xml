@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout>
+<data>
+    <variable
+        name="viewModel"
+
+        type="com.example.chatapplication.viewmodel.ChatAppViewModel"></variable>
 
 
-
+    </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    >
 
 
     <androidx.appcompat.widget.Toolbar
@@ -112,7 +119,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_weight="1"
-            android:text=""
+            android:text="@={viewModel.message}"
             android:background="@android:color/transparent"
             android:hint="Enter Message"
             android:importantForAutofill="no"

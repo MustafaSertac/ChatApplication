@@ -1,19 +1,24 @@
 package com.example.chatapplication.fragments
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.chatapplication.R
+import com.example.chatapplication.SignInActivity
 import com.example.chatapplication.adapter.OnItemClickListener
 import com.example.chatapplication.adapter.UserAdapter
 import com.example.chatapplication.databinding.FragmentHomeBinding
@@ -55,6 +60,8 @@ class HomeFragment:Fragment(), OnItemClickListener {
         binding?.let {
             it.logOut.setOnClickListener{
                 fbauth.signOut()
+                startActivity(Intent(requireContext(),SignInActivity::class.java))
+
 
             }
             it.toolbarMain
@@ -74,6 +81,9 @@ onSubscribe()
             userAdapter.setOnClickListener(this)
 
         })
+        viewModel.imageUrl.observe(viewLifecycleOwner, Observer {
+            Glide.with(requireActivity()).load(it).into(circleImageView)
+        })
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -81,6 +91,8 @@ onSubscribe()
     }
 
     override fun onUserSelected(position: Int, users: Users) {
+findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToChatFragment(users))
+
 
     }
 }
