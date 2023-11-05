@@ -10,7 +10,9 @@ import com.example.chatapplication.MyApplication
 import com.example.chatapplication.adapter.UserAdapter
 import com.example.chatapplication.adapter.Util
 import com.example.chatapplication.database.SharedPrefs
+import com.example.chatapplication.model.Messages
 import com.example.chatapplication.model.Users
+import com.example.chatapplication.repository.MessageRepo
 import com.example.chatapplication.repository.UsersRepo
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.installations.Utils
@@ -27,7 +29,7 @@ class ChatAppViewModel : ViewModel() {
     val firestore = FirebaseFirestore.getInstance()
     val name = MutableLiveData<String>()
     val imageUrl = MutableLiveData<String>()
-
+val messageRepo=MessageRepo()
 
     val usersRepo = UsersRepo()
 
@@ -39,7 +41,9 @@ class ChatAppViewModel : ViewModel() {
 
 
     }
-
+fun getMessage(friendId:String):LiveData<List<Messages>>{
+return  messageRepo.getMessages(friendId)
+}
     fun getCurrentUser() = viewModelScope.launch(Dispatchers.IO) {
 
         val context = MyApplication.instance.applicationContext
@@ -124,10 +128,17 @@ val mySharedPref=SharedPrefs(context)
                             "person",
                             name.value!!
                         )
-                    message.value=""
+                    if (taskmessage.isSuccessful){
+
+                        message.value = ""
 
 
-    }
+
+                    }
+
+
+
+                }
 
 
 

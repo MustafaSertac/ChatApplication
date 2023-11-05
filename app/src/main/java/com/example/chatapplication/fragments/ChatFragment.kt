@@ -3,6 +3,7 @@ package com.example.chatapplication.fragments
 import android.annotation.SuppressLint
 import android.media.Image
 import android.os.Bundle
+import android.os.Message
 import android.provider.ContactsContract.Directory
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +13,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.chatapplication.R
+import com.example.chatapplication.adapter.MessageAdapter
 import com.example.chatapplication.adapter.Util
 import com.example.chatapplication.databinding.FragmentChatBinding
+import com.example.chatapplication.model.Messages
 import com.example.chatapplication.viewmodel.ChatAppViewModel
 import com.google.firebase.installations.Utils
 import de.hdodenhof.circleimageview.CircleImageView
@@ -35,6 +40,7 @@ private lateinit var circleImageView: CircleImageView
     private lateinit var tvStatus:TextView
     private lateinit var backButton: ImageView
     private lateinit var chatButton: Button
+    private  var messeageAdapter=MessageAdapter()
 
     private val binding:FragmentChatBinding? get() = _binding
     override fun onCreateView(
@@ -85,10 +91,21 @@ private lateinit var circleImageView: CircleImageView
             viewModel.sendMessage(Util.getUiLoggedIn(), args.users.userid!!, args.users.username!!, args.users.imageUrl!!)
 
 
-
-
-
         }
+        viewModel.getMessage(args.users.userid!!).observe(viewLifecycleOwner, Observer {
+            initRecycleView(it)
+        })
+
+
+    }
+
+    private fun initRecycleView(list:List<Messages>) {
+val layaoutManager=LinearLayoutManager(requireContext())
+        binding?.messagesRecyclerView?.layoutManager=layaoutManager
+        layaoutManager.stackFromEnd=true
+        messeageAdapter.setList(list)
+        messeageAdapter.notifyDataSetChanged()
+        binding?.messagesRecyclerView?.adapter=messeageAdapter
 
     }
 
