@@ -11,7 +11,9 @@ import com.example.chatapplication.adapter.UserAdapter
 import com.example.chatapplication.adapter.Util
 import com.example.chatapplication.database.SharedPrefs
 import com.example.chatapplication.model.Messages
+import com.example.chatapplication.model.RecentChats
 import com.example.chatapplication.model.Users
+import com.example.chatapplication.repository.ChatListRepo
 import com.example.chatapplication.repository.MessageRepo
 import com.example.chatapplication.repository.UsersRepo
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +26,7 @@ import kotlinx.coroutines.launch
 class ChatAppViewModel : ViewModel() {
 
 
-
+    val chatlistRepo = ChatListRepo()
     val message = MutableLiveData<String>()
     val firestore = FirebaseFirestore.getInstance()
     val name = MutableLiveData<String>()
@@ -143,4 +145,11 @@ val mySharedPref=SharedPrefs(context)
 
 
 }
+    fun getRecentUsers(): LiveData<List<RecentChats>> {
+
+
+        return chatlistRepo.getAllChatList()
+
+    }
+
 }

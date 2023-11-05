@@ -22,13 +22,16 @@ import com.example.chatapplication.SignInActivity
 import com.example.chatapplication.adapter.OnItemClickListener
 import com.example.chatapplication.adapter.UserAdapter
 import com.example.chatapplication.databinding.FragmentHomeBinding
+import com.example.chatapplication.model.RecentChats
 import com.example.chatapplication.model.Users
 import com.example.chatapplication.viewmodel.ChatAppViewModel
+import com.example.chatmessenger.adapter.RecentChatAdapter
+import com.example.chatmessenger.adapter.onChatClicked
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
 
-class HomeFragment:Fragment(), OnItemClickListener {
+class HomeFragment:Fragment(), OnItemClickListener,onChatClicked {
     private lateinit var rvUsers : RecyclerView
     private lateinit var rvRecentChats : RecyclerView
     private lateinit var adapter : UserAdapter
@@ -40,6 +43,7 @@ class HomeFragment:Fragment(), OnItemClickListener {
     private lateinit var fbauth:FirebaseAuth
     private lateinit var homePd:ProgressDialog
     private lateinit var toolbar: Toolbar
+    private  var recentChatAdapter= RecentChatAdapter()
     private val binding: FragmentHomeBinding? get() =_binding
 
     override fun onCreateView(
@@ -73,6 +77,7 @@ class HomeFragment:Fragment(), OnItemClickListener {
         val layoutManager=LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
         rvUsers.layoutManager=layoutManager
 onSubscribe()
+
     }
     private fun onSubscribe(){
         viewModel.getUsers().observe(viewLifecycleOwner, Observer {
@@ -84,6 +89,14 @@ onSubscribe()
         viewModel.imageUrl.observe(viewLifecycleOwner, Observer {
             Glide.with(requireActivity()).load(it).into(circleImageView)
         })
+        viewModel.getRecentUsers().observe(viewLifecycleOwner, Observer {
+  val recleview=binding?.rvRecentChats
+            recleview!!.layoutManager=LinearLayoutManager(requireContext())
+            recleview!!.adapter=recentChatAdapter
+            recentChatAdapter.setOnChatClickListener(this)
+            recentChatAdapter.setList(it)
+
+        })
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -93,6 +106,10 @@ onSubscribe()
     override fun onUserSelected(position: Int, users: Users) {
 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToChatFragment(users))
 
+
+    }
+
+    override fun getOnChatCLickedItem(position: Int, chatList: RecentChats) {
 
     }
 }
