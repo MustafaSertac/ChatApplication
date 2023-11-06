@@ -2,8 +2,6 @@ package com.example.chatapplication.adapter
 
 
 
-import android.annotation.SuppressLint
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-
-import androidx.recyclerview.widget.DiffUtil
 import com.example.chatapplication.R
 import com.example.chatapplication.model.Messages
 
@@ -58,7 +54,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageHolder>() {
     }
 
     override fun getItemViewType(position: Int) =
-        if (listOfMessage[position].sender == Util.getUiLoggedIn()) RIGHT else LEFT
+        if (listOfMessage[position].sender == Utils.getUidLoggedIn()) RIGHT else LEFT
 
     fun setList(newList: List<Messages>) {
 

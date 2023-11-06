@@ -2,7 +2,7 @@ package com.example.chatapplication.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.chatapplication.adapter.Util
+import com.example.chatapplication.adapter.Utils
 import com.example.chatapplication.model.RecentChats
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -19,7 +19,7 @@ class ChatListRepo() {
 
 
         // SHOWING THE RECENT MESSAGED PERSON ON TOP
-        firestore.collection("Conversation${Util.getUiLoggedIn()}").orderBy("time", Query.Direction.DESCENDING)
+        firestore.collection("Conversation${Utils.getUidLoggedIn()}").orderBy("time", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, exception ->
 
 
@@ -36,7 +36,7 @@ class ChatListRepo() {
                     val chatlistmodel = document.toObject(RecentChats::class.java)
 
 
-                    if (chatlistmodel.sender.equals(Util.getUiLoggedIn())) {
+                    if (chatlistmodel.sender.equals(Utils.getUidLoggedIn())) {
 
 
                         chatlistmodel.let {

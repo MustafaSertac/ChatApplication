@@ -16,15 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.chatapplication.R
 import com.example.chatapplication.adapter.MessageAdapter
-import com.example.chatapplication.adapter.Util
+import com.example.chatapplication.adapter.Utils
 import com.example.chatapplication.databinding.FragmentChatfromHomeBinding
-import com.example.chatapplication.fragments.ChatFromHomeFragmentArgs.Companion.fromBundle
 import com.example.chatapplication.model.Messages
 import com.example.chatapplication.viewmodel.ChatAppViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatFromHomeFragment:Fragment() {
-    private val args : ChatFromHomeFragmentArgs by navArgs()
+   private val args : ChatFromHomeFragmentArgs by navArgs()
     lateinit var binding: FragmentChatfromHomeBinding
     lateinit var viewModel : ChatAppViewModel
     lateinit var toolbar: Toolbar
@@ -80,7 +79,7 @@ class ChatFromHomeFragment:Fragment() {
         binding.sendBtn.setOnClickListener {
 
 
-            viewModel.sendMessage(Util.getUiLoggedIn(), args.recentchats.friendid!!, args.recentchats.name!!, args.recentchats.friendsimage!!)
+            viewModel.sendMessage(Utils.getUidLoggedIn(), args.recentchats.friendid!!, args.recentchats.name!!, args.recentchats.friendsimage!!)
 
 
 
@@ -89,7 +88,7 @@ class ChatFromHomeFragment:Fragment() {
         }
 
 
-        viewModel.getMessage(args.recentchats.friendid!!).observe(viewLifecycleOwner, Observer {
+        viewModel.getMessages(args.recentchats.friendid!!).observe(viewLifecycleOwner, Observer {
 
 
 

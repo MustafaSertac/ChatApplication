@@ -1,10 +1,7 @@
 package com.example.chatapplication.fragments
 
 import android.annotation.SuppressLint
-import android.media.Image
 import android.os.Bundle
-import android.os.Message
-import android.provider.ContactsContract.Directory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,46 +9,45 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.chatapplication.R
 import com.example.chatapplication.adapter.MessageAdapter
-import com.example.chatapplication.adapter.Util
+import com.example.chatapplication.adapter.Utils
 import com.example.chatapplication.databinding.FragmentChatBinding
 import com.example.chatapplication.model.Messages
 import com.example.chatapplication.viewmodel.ChatAppViewModel
-import com.google.firebase.installations.Utils
+
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ChatFragment:Fragment(),View.OnClickListener {
+class ChatFragment:Fragment() {
 
-    private   var _binding : FragmentChatBinding?=null
-    private lateinit var args: ChatFragmentArgs
-private lateinit var circleImageView: CircleImageView
+    lateinit var args: ChatFragmentArgs
+    lateinit var binding : FragmentChatBinding
+
     lateinit var viewModel : ChatAppViewModel
+    lateinit var adapter : MessageAdapter
     lateinit var toolbar: Toolbar
-    private lateinit var tvName:TextView
-    private lateinit var tvStatus:TextView
-    private lateinit var backButton: ImageView
-    private lateinit var chatButton: Button
-    private  var messeageAdapter=MessageAdapter()
 
-    private val binding:FragmentChatBinding? get() = _binding
+
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentChatBinding.inflate(inflater,container,false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
-        return binding!!.root
+        return binding.root
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,8 +64,8 @@ private lateinit var circleImageView: CircleImageView
 
         args = ChatFragmentArgs.fromBundle(requireArguments())
 
-        binding?.viewModel = viewModel
-        binding?.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
 
 
@@ -85,32 +81,51 @@ private lateinit var circleImageView: CircleImageView
 
         }
 
-        binding?.sendBtn?.setOnClickListener {
+        binding.sendBtn.setOnClickListener {
 
 
-            viewModel.sendMessage(Util.getUiLoggedIn(), args.users.userid!!, args.users.username!!, args.users.imageUrl!!)
+            viewModel.sendMessage(Utils.getUidLoggedIn(), args.users.userid!!, args.users.username!!, args.users.imageUrl!!)
+
+
+
 
 
         }
-        viewModel.getMessage(args.users.userid!!).observe(viewLifecycleOwner, Observer {
-            initRecycleView(it)
+
+
+
+        viewModel.getMessages(args.users.userid!!).observe(viewLifecycleOwner, Observer {
+
+
+
+
+
+            initRecyclerView(it)
+
+
+
         })
 
 
-    }
 
-    private fun initRecycleView(list:List<Messages>) {
-val layaoutManager=LinearLayoutManager(requireContext())
-        binding?.messagesRecyclerView?.layoutManager=layaoutManager
-        layaoutManager.stackFromEnd=true
-        messeageAdapter.setList(list)
-        messeageAdapter.notifyDataSetChanged()
-        binding?.messagesRecyclerView?.adapter=messeageAdapter
 
     }
 
-    override fun onClick(v: View?) {
+    private fun initRecyclerView(list: List<Messages>) {
+
+
+        adapter = MessageAdapter()
+
+        val layoutManager = LinearLayoutManager(context)
+
+        binding.messagesRecyclerView.layoutManager = layoutManager
+        layoutManager.stackFromEnd = true
+
+        adapter.setList(list)
+        adapter.notifyDataSetChanged()
+        binding.messagesRecyclerView.adapter = adapter
+
+
 
     }
-
 }

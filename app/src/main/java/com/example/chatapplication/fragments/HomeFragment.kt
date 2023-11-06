@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -33,19 +34,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
 
 class HomeFragment:Fragment(), OnItemClickListener,onChatClicked {
-    private lateinit var rvUsers : RecyclerView
-    private lateinit var rvRecentChats : RecyclerView
-    private lateinit var adapter : UserAdapter
-    private lateinit var viewModel : ChatAppViewModel
-    private lateinit var circleImageView: CircleImageView
+    lateinit var rvUsers : RecyclerView
+    lateinit var rvRecentChats : RecyclerView
+    lateinit var adapter : UserAdapter
+    lateinit var viewModel : ChatAppViewModel
+    lateinit var toolbar: Toolbar
+    lateinit var circleImageView: CircleImageView
+    lateinit var recentadapter : RecentChatAdapter
     lateinit var firestore : FirebaseFirestore
-    private var _binding: FragmentHomeBinding?=null
-    private lateinit var userAdapter: UserAdapter
-    private lateinit var fbauth:FirebaseAuth
-    private lateinit var homePd:ProgressDialog
-    private lateinit var toolbar: Toolbar
-    private  var recentChatAdapter= RecentChatAdapter()
-    private val binding: FragmentHomeBinding? get() =_binding
+    lateinit var binding: FragmentHomeBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,67 +51,152 @@ class HomeFragment:Fragment(), OnItemClickListener,onChatClicked {
     ): View? {
         // Inflate the layout for this fragment
 
-        _binding = FragmentHomeBinding.inflate(inflater,container,false)
-        return binding!!.root
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fbauth=FirebaseAuth.getInstance()
-        homePd= ProgressDialog(requireContext())
-
-        binding?.let {
-            it.logOut.setOnClickListener{
-                fbauth.signOut()
-                startActivity(Intent(requireContext(),SignInActivity::class.java))
 
 
-            }
-            it.toolbarMain
-            circleImageView=it.tlImage
-            rvUsers=it.rvUsers
-        }
         viewModel = ViewModelProvider(this).get(ChatAppViewModel::class.java)
-        userAdapter= UserAdapter()
-        val layoutManager=LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
-        rvUsers.layoutManager=layoutManager
-onSubscribe()
+        toolbar = view.findViewById(R.id.toolbarMain)
+        val logoutimage = toolbar.findViewById<ImageView>(R.id.logOut)
+        circleImageView = toolbar.findViewById(R.id.tlImage)
 
-    }
-    private fun onSubscribe(){
-        viewModel.getUsers().observe(viewLifecycleOwner, Observer {
-            rvUsers.adapter=userAdapter
-            userAdapter.setList(it)
-            userAdapter.setOnClickListener(this)
 
-        })
+
+        binding.lifecycleOwner = viewLifecycleOwner
+
+
+
         viewModel.imageUrl.observe(viewLifecycleOwner, Observer {
-            Glide.with(requireActivity()).load(it).into(circleImageView)
+
+
+            Glide.with(requireContext()).load(it).into(circleImageView)
+
+
+
+
+
         })
+
+
+
+
+//
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    getActivity()?.moveTaskToBack(true);
+//                    getActivity()?.finish();
+//
+//                }
+//
+//            })
+
+        firestore = FirebaseFirestore.getInstance()
+
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+
+
+
+        logoutimage.setOnClickListener {
+
+
+            firebaseAuth.signOut()
+
+            startActivity(Intent(requireContext(), SignInActivity::class.java))
+
+
+        }
+
+
+        rvUsers = view.findViewById(R.id.rvUsers)
+        rvRecentChats = view.findViewById(R.id.rvRecentChats)
+        adapter = UserAdapter()
+        recentadapter = RecentChatAdapter()
+
+
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager2 = LinearLayoutManager(activity)
+
+        rvUsers.layoutManager = layoutManager
+        rvRecentChats.layoutManager= layoutManager2
+
+
+        viewModel.getUsers().observe(viewLifecycleOwner, Observer {
+
+            adapter.setList(it)
+            rvUsers.adapter = adapter
+
+
+        })
+
+
+        circleImageView.setOnClickListener {
+
+
+            view.findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
+
+
+        }
+
+
+        adapter.setOnClickListener(this)
+
+
+
+
+
         viewModel.getRecentUsers().observe(viewLifecycleOwner, Observer {
-  val recleview=binding?.rvRecentChats
-            recleview!!.layoutManager=LinearLayoutManager(requireContext())
-            recleview!!.adapter=recentChatAdapter
-            recentChatAdapter.setOnChatClickListener(this)
-            recentChatAdapter.setList(it)
+
+
+            recentadapter.setList(it)
+            rvRecentChats.adapter = recentadapter
+
+
+
+
 
         })
+
+        recentadapter.setOnChatClickListener(this)
+
+
+
+
+
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding=null
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
     }
+
 
     override fun onUserSelected(position: Int, users: Users) {
-findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToChatFragment(users))
+
+        val action = HomeFragmentDirections.actionHomeFragmentToChatFragment(users)
+        view?.findNavController()?.navigate(action)
+
+
 
 
     }
 
+
     override fun getOnChatCLickedItem(position: Int, chatList: RecentChats) {
+
+
         val action = HomeFragmentDirections.actionHomeFragmentToChatfromHome(chatList)
         view?.findNavController()?.navigate(action)
 
+
+
     }
+
+
 }
