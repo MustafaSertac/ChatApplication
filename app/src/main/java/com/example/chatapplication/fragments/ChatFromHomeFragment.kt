@@ -4,27 +4,123 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.chatapplication.R
+import com.example.chatapplication.adapter.MessageAdapter
+import com.example.chatapplication.adapter.Util
 import com.example.chatapplication.databinding.FragmentChatfromHomeBinding
+import com.example.chatapplication.fragments.ChatFromHomeFragmentArgs.Companion.fromBundle
+import com.example.chatapplication.model.Messages
+import com.example.chatapplication.viewmodel.ChatAppViewModel
+import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatFromHomeFragment:Fragment() {
-   private  var _binding: FragmentChatfromHomeBinding?=null
-    private val binding:FragmentChatfromHomeBinding? get() = _binding
+    private val args : ChatFromHomeFragmentArgs by navArgs()
+    lateinit var binding: FragmentChatfromHomeBinding
+    lateinit var viewModel : ChatAppViewModel
+    lateinit var toolbar: Toolbar
+    lateinit var adapter : MessageAdapter
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentChatfromHomeBinding.inflate(inflater,container,false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chatfrom_home, container, false)
 
 
-        return binding!!.root
+        return binding.root
 
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding=null
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        toolbar = view.findViewById(R.id.toolBarChat)
+        val circleImageView = toolbar.findViewById<CircleImageView>(R.id.chatImageViewUser)
+        val textViewName = toolbar.findViewById<TextView>(R.id.chatUserName)
+
+
+
+
+
+        viewModel = ViewModelProvider(this).get(ChatAppViewModel::class.java)
+
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+
+        Glide.with(view.getContext()).load(args.recentchats.friendsimage!!).placeholder(R.drawable.person).dontAnimate().into(circleImageView);
+        textViewName.setText(args.recentchats.name)
+        //textViewStatus.setText(args.users.status)
+
+
+
+        binding.chatBackBtn.setOnClickListener {
+
+
+            view.findNavController().navigate(R.id.action_chatfromHome_to_homeFragment)
+
+        }
+
+        binding.sendBtn.setOnClickListener {
+
+
+            viewModel.sendMessage(Util.getUiLoggedIn(), args.recentchats.friendid!!, args.recentchats.name!!, args.recentchats.friendsimage!!)
+
+
+
+
+
+        }
+
+
+        viewModel.getMessage(args.recentchats.friendid!!).observe(viewLifecycleOwner, Observer {
+
+
+
+
+
+            initRecyclerView(it)
+
+
+
+        })
+
+
+
+
+    }
+
+    private fun initRecyclerView(list: List<Messages>) {
+
+
+        adapter = MessageAdapter()
+
+        val layoutManager = LinearLayoutManager(context)
+
+        binding.messagesRecyclerView.layoutManager = layoutManager
+        layoutManager.stackFromEnd = true
+
+        adapter.setList(list)
+        adapter.notifyDataSetChanged()
+        binding.messagesRecyclerView.adapter = adapter
+
+
+
     }
 }

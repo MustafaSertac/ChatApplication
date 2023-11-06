@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -98,6 +99,7 @@ onSubscribe()
 
         })
     }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding=null
@@ -110,6 +112,8 @@ findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToChatFrag
     }
 
     override fun getOnChatCLickedItem(position: Int, chatList: RecentChats) {
+        val action = HomeFragmentDirections.actionHomeFragmentToChatfromHome(chatList)
+        view?.findNavController()?.navigate(action)
 
     }
 }

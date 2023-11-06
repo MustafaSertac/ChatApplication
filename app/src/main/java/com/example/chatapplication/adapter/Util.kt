@@ -10,6 +10,10 @@ class Util {
     companion object{
         private val auth=FirebaseAuth.getInstance()
         private var userId:String=""
+        const val REQUEST_IMAGE_CAPTURE = 1
+        const val REQUEST_IMAGE_PICK = 2
+        const val MESSAGE_RIGHT = 1
+        const val MESSAGE_LEFT = 2
         fun getUiLoggedIn():String{
             if(auth.currentUser!=null){
             userId= auth.currentUser!!.uid
