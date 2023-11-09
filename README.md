@@ -1,5 +1,5 @@
 # ChatApplication
-It was developed through online resources.
+It was developed through online resources.Basic chat application
 # Features
  Firebase Cloud Messaging (FCM) & Retrofit for Push notification
  
